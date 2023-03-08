@@ -30,7 +30,7 @@ async def hit(ctx):
     # Send the new card to the chat channel
     await ctx.channel.send(f"Player's hand: {player_hand}")
     
-''''
+
 #Creates a list of cards 
 cards = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 #Defines a set value for each card from the list
@@ -40,7 +40,7 @@ card_values = {"A": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "
 def user_hand():
   hand = []
   hand.append(random.choice(cards))
-  hand.append(random.choice(cards))
+  
   return hand
   
 hand_value = 0
@@ -57,4 +57,6 @@ while hand_value < 21:
 
 print("Player's hand:", hand)
 print("Hand value:", hand_value)
+
+''''
 client.run(TOKEN)
