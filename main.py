@@ -2,13 +2,12 @@ import discord
 import random
 from discord.ext import commands
 
-TOKEN = "MTA4MDk2MDY1NTc0NzcxOTE3OQ.GWvIBp.G-WQ5f50btdE5w73c2_T6PnSHOB9MIm2tpUg3Y"
+TOKEN = "MTA4MDk2MDY1NTc0NzcxOTE3OQ.GUrcZq.V7ej6fn2cLayxwly316fQJpZHyl57oqUGTz4CY"
 
 intents = discord.Intents.default()
 intents.message_content = True
 
 client = commands.Bot(command_prefix="!", intents=intents)
-
 '''
 
 @client.command("play")
@@ -58,9 +57,42 @@ while hand_value < 21:
 print("Player's hand:", hand)
 print("Hand value:", hand_value)
 
-''''
+'''
+words = ["jazz", "zinc", "cycle", "lymph", "onyx"]
 
 
+class Guess:
 
+  def __init__(self):
+    self.random_word = list(random.choice(words))
+    self.guess = ['-' for letter in self.random_word]
+
+  def user_guess(self, ctx, letter):
+    count = 0
+    if letter in self.random_word:
+      for i in range(len(self.random_word)):
+        if self.random_word[i] == letter:
+          self.guess[i] = letter
+          count += 1
+    return count
+
+
+@client.command("test")
+async def test(ctx):
+  await ctx.channel.send(guess.guess)
+  await ctx.channel.send(guess.random_word)
+
+
+@client.command("guess")
+async def try_letter(ctx, letter):
+  results = guess.user_guess(ctx, letter)
+  if results > 0:
+    await ctx.channel.send("correct!")
+    await ctx.channel.send(guess.guess)
+  else:
+    await ctx.channel.send("guess again")
+
+
+guess = Guess()
 
 client.run(TOKEN)
