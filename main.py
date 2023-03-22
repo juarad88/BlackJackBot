@@ -1,8 +1,9 @@
-import discord
+import discord, os
 import random
+from PIL import Image,ImageDraw
 from discord.ext import commands
 
-TOKEN = "MTA4MDk2MDY1NTc0NzcxOTE3OQ.GUrcZq.V7ej6fn2cLayxwly316fQJpZHyl57oqUGTz4CY"
+TOKEN = os.environ['token']
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -65,7 +66,9 @@ class Guess:
 
   def __init__(self):
     self.random_word = list(random.choice(words))
-    self.guess = ['-' for letter in self.random_word]
+    self.guess = ['?' for letter in self.random_word]
+    self.misses = 0
+    self.guessed_letters = []
 
   def user_guess(self, ctx, letter):
     count = 0
@@ -74,6 +77,10 @@ class Guess:
         if self.random_word[i] == letter:
           self.guess[i] = letter
           count += 1
+    else:
+      self.misses+=1
+      if letter not in self.guessed_letters:
+        self.guessed_letters.append(letter)
     return count
 
 
@@ -82,15 +89,31 @@ async def test(ctx):
   await ctx.channel.send(guess.guess)
   await ctx.channel.send(guess.random_word)
 
+def prepare_image():
+  img = Image.open("stage-"+str(guess.misses)+".png")
+  EditedImage = ImageDraw.Draw(img)
+  EditedImage.text((10,10),"".join(guess.guess),fill = (255,0,0))
+  img.save("to_send.png")
+  
+
 
 @client.command("guess")
 async def try_letter(ctx, letter):
   results = guess.user_guess(ctx, letter)
+  prepare_image()
   if results > 0:
     await ctx.channel.send("correct!")
     await ctx.channel.send(guess.guess)
   else:
-    await ctx.channel.send("guess again")
+    await ctx.channel.send("Incorrect")
+  
+  await ctx.channel.send("guess again",file=discord.File("to_send.png"))
+ 
+      
+
+
+      
+    
 
 
 guess = Guess()
